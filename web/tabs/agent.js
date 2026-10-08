@@ -1,6 +1,6 @@
 /* Agent: chat with qwen, which thinks out loud (Thinking box), runs Media Studio's tools (terminal log) and proposes
    files you accept or reject. One turn runs as a job; events stream over SSE ("agent"). */
-import { $, $$, h, esc, get, post, toast, fileUrl, thumbUrl, baseName, on, store, cancelJob, effortSlider, pref, setPref, imagePicker, saveBlob, pickFolder, confirmBox } from '../app.js';
+import { $, $$, h, esc, get, post, toast, fileUrl, thumbUrl, baseName, on, store, cancelJob, effortSlider, pref, setPref, imagePicker, saveBlob, pickFolder, confirmBox, sound, collapse, flash } from '../app.js';
 
 let root, sid = null, S = null, jobId = null, liveReason = null, liveText = null;
 const opt = { think: pref('agent.think', false), online: pref('agent.online', true), effort: pref('agent.effort', 3) };
@@ -26,7 +26,7 @@ function mediaPreview(p) {
 
 function addEvent(ev, live) {
   const log = $('[data-log]', root);
-  const atBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 80;
+  const atBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 80, n0 = log.children.length;
   if (ev.type === 'user') {
     liveReason = liveText = null;
     const el = h(`<div class="ag-user"><div>${md(ev.t)}</div></div>`);
@@ -63,6 +63,12 @@ function addEvent(ev, live) {
   } else if (ev.type === 'done') {
     liveReason = liveText = null;
   }
+  if (live) {
+    for (const c of [...log.children].slice(n0)) c.classList.add('pop');
+    if (ev.type === 'file') sound('notify');
+    else if (ev.type === 'file_decision' && ev.status === 'accepted') sound('success');
+    else if (ev.type === 'done') sound('receive');
+  }
   if (atBottom || live) log.scrollTop = log.scrollHeight;
 }
 
@@ -93,12 +99,19 @@ async function openSession(id) {
   S = await get('/api/agent/session?id=' + encodeURIComponent(id));
   const log = $('[data-log]', root); log.innerHTML = '';
   liveReason = liveText = null;
-  if (!S.log.length) log.append(h('<div class="empty" data-hello>Ask for anything: "make a moody tavern image and a matching ambience sound", "write a changelog from these notes", "what is in this screenshot?"</div>'));
+  if (!S.log.length) log.append(h(HELLO));
   for (const ev of S.log) addEvent(ev, false);
   $$('.ag-think', log).forEach((d) => { d.open = false; $('summary', d).textContent = 'Thought'; });
   drawSessions();
   log.scrollTop = log.scrollHeight;
 }
+/* no session yet: the first Send creates one */
+function blankChat() {
+  sid = null; S = null; setPref('agent.sid', null);
+  liveReason = liveText = null;
+  const log = $('[data-log]', root); log.innerHTML = ''; log.append(h(HELLO));
+}
+const HELLO = '<div class="empty" data-hello>Ask for anything: "make a moody tavern image and a matching ambience sound", "write a changelog from these notes", "what is in this screenshot?"</div>';
 
 async function drawSessions() {
   const { sessions } = await get('/api/agent/sessions');
@@ -106,7 +119,13 @@ async function drawSessions() {
   for (const s of sessions) {
     const it = h(`<div class="item ${s.id === sid ? 'active' : ''}" style="cursor:pointer"><span class="grow" title="${esc(s.title)}">${esc(s.title)}</span><span class="small faint">${s.turns}</span></div>`);
     const del = h('<button class="btn ghost sm" title="Delete chat">✕</button>');
-    del.onclick = async (e) => { e.stopPropagation(); if (!(await confirmBox('Delete chat', `Move "${s.title}" to the Recycle Bin?`, 'Delete', true))) return; await post('/api/agent/delete', { sid: s.id }); if (s.id === sid) { sid = null; await newChat(); } else drawSessions(); };
+    del.onclick = async (e) => {
+      e.stopPropagation();
+      if (!(await confirmBox('Delete chat', `Move "${s.title}" to the Recycle Bin?`, 'Delete', true))) return;
+      if (s.id === sid) { const next = sessions.find((x) => x.id !== s.id); if (next) openSession(next.id); else blankChat(); }
+      await Promise.all([collapse(it), post('/api/agent/delete', { sid: s.id }).catch((err) => toast(err.message, true))]);
+      drawSessions();
+    };
     it.append(del); it.onclick = () => openSession(s.id);
     box.append(it);
   }
@@ -117,7 +136,7 @@ function setBusy(on2) {
   $('[data-send]', root).hidden = on2; $('[data-stop]', root).hidden = !on2;
 }
 
-export async function mount(el) {
+export async function mount(el, arg) {
   root = el;
   el.append(h(`<div class="page-head"><div><h2>Agent</h2><p>Chat with qwen. It thinks out loud, uses Media Studio's tools, and asks before it saves a file.</p></div></div>`));
   el.append(h(`<div class="ag-wrap"><div class="ag-side card"><button class="btn primary" data-new style="width:100%;margin-bottom:10px">+ New chat</button><div class="list" data-sessions></div></div>
@@ -148,7 +167,7 @@ export async function mount(el) {
     $('[data-hello]', root)?.remove();
     try {
       const r = await post('/api/agent/send', { sid, text, images: [...imgs.list], files, think: opt.think, online: opt.online, effort: opt.effort });
-      jobId = r.id; setBusy(true);
+      jobId = r.id; setBusy(true); sound('send');
       ta.value = ''; imgs.clear(); files = []; $('[data-files]', el).textContent = '';
     } catch (e) { toast(e.message, true); }
   };
@@ -160,10 +179,33 @@ export async function mount(el) {
   on('job', (j) => { if (j.id === jobId && !['loading', 'running', 'queued'].includes(j.status)) { setBusy(false); if (j.status === 'error') { toast(j.error || 'Agent failed', true); addEvent({ type: 'status', t: '✖ ' + (j.error || 'failed') }, true); } if (j.status === 'cancelled') addEvent({ type: 'status', t: '■ stopped' }, true); } });
   const last = pref('agent.sid', null);
   const { sessions } = await get('/api/agent/sessions');
-  if (last && sessions.some((s) => s.id === last)) await openSession(last);
+  if (arg?.sid || arg?.task) await jumpTo(arg, sessions);
+  else if (last && sessions.some((s) => s.id === last)) await openSession(last);
   else if (sessions.length) await openSession(sessions[0].id);
-  else await newChat();
+  else blankChat();
   const running = [...store.jobs.values()].find((j) => j.preset === 'agent' && ['loading', 'running', 'queued'].includes(j.status));
   if (running) { jobId = running.id; setBusy(true); }
 }
-export function show() { if (sid) drawSessions(); }
+export async function show(arg) {
+  if (arg?.sid || arg?.task) await jumpTo(arg);
+  else drawSessions();
+}
+
+/* open the chat a job belongs to and flash the turn it ran (a jump from System or the job tray).
+   Jobs from before the session id was recorded are found by their task text. */
+const flat = (s) => String(s || '').replace(/\s+/g, ' ').trim();
+async function jumpTo({ sid: id, task }, sessions) {
+  const want = flat(task).slice(0, 60);
+  sessions ||= (await get('/api/agent/sessions')).sessions;
+  if (!id || !sessions.some((s) => s.id === id)) {
+    id = null;
+    for (const s of sessions) {
+      const full = await get('/api/agent/session?id=' + encodeURIComponent(s.id)).catch(() => null);
+      if (full?.log.some((ev) => ev.type === 'user' && flat(ev.t).startsWith(want))) { id = s.id; break; }
+    }
+  }
+  if (!id) { toast('That chat was deleted.', true); if (!sid) blankChat(); drawSessions(); return; }
+  await openSession(id);
+  const turns = $$('.ag-user', root);
+  flash(turns.filter((u) => flat(u.textContent).startsWith(want)).pop() || turns.pop());
+}

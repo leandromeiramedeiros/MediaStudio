@@ -7,6 +7,7 @@ writes: it proposes a file the user accepts or rejects in the app. Sessions live
 import base64
 import json
 import os
+import re
 import time
 import urllib.request
 
@@ -67,6 +68,8 @@ def tools(online):
 # ---------- sessions ----------
 
 def path_of(sid):
+    if not re.fullmatch(r"[\w-]+", sid or ""):
+        raise JobError(f"bad session id {sid!r}", 2)
     return os.path.join(AGENT_DIR, sid + ".json")
 
 

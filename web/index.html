@@ -16,13 +16,14 @@
       <span class="pill warn" id="dd2" hidden title="Dragon's Dogma 2 is running: the GPU is kept for the game">DD2 running</span>
       <span class="pill" id="net" title="Internet: online extras (qwen web search) are available"><span class="dot"></span><span>offline</span></span>
       <button class="pill" id="tray-btn" type="button" title="Jobs"><span class="dot"></span><span id="tray-count">no jobs</span></button>
-      <button class="btn ghost sm" id="theme" type="button" title="Theme">◐</button>
+      <button class="btn ghost icon-btn" id="mute" type="button" title="Sounds"></button>
+      <button class="btn ghost icon-btn" id="theme" type="button" title="Theme">◐</button>
     </div>
   </header>
   <main class="view" id="view"></main>
 </div>
 <div class="tray" id="tray" hidden></div>
-<div class="toast" id="toast" hidden></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script type="module" src="/web/app.js"></script>
 </body>
 </html>

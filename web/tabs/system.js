@@ -1,7 +1,7 @@
 /* System: resources and the local AI runtimes, live. The cockpit's LOCAL AI panel, rebuilt for the web:
    gauges with drill-down (per thread, per process, disk by group), 5-minute sparklines, runtime cards with
    start/stop, live job cards, and the job feed by day with per-model rollups and job details. */
-import { $, h, esc, on, post, store, secs, baseName, toast, jobCard } from '../app.js';
+import { $, h, esc, on, post, store, secs, toast, jobCard, jobLinks } from '../app.js';
 
 let root, open = new Set(), openJobs = new Set(), openDays = new Set(['TODAY']), moreDays = new Set();
 try { open = new Set(JSON.parse(localStorage.getItem('ms.sys.open') || '[]')); } catch (e) { /* storage off */ }
@@ -153,19 +153,19 @@ function detail(j) {
   ].filter(Boolean);
   const el = h(`<div class="jdetail">${cells.map((c) => `<span>${c}</span>`).join('')}<span style="grid-column:1/-1" class="dim">${esc(j.task || '')}</span></div>`);
   if (j.error) el.append(h(`<span style="grid-column:1/-1;color:var(--danger)">${esc(j.error)}</span>`));
-  if (j.output) {
-    const row = h(`<span style="grid-column:1/-1" class="row"><span class="mono grow" style="overflow:hidden;text-overflow:ellipsis">${esc(baseName(j.output))}</span></span>`);
-    const o = h('<button class="btn sm">📄 Open</button>'); o.onclick = (e) => { e.stopPropagation(); post('/api/open', { path: j.output }); };
-    const r = h('<button class="btn sm">📂 Show</button>'); r.onclick = (e) => { e.stopPropagation(); post('/api/reveal', { path: j.output }); };
-    row.append(o, r); el.append(row);
-  }
+  const links = jobLinks(j);
+  if (links) { links.style.gridColumn = '1/-1'; el.append(links); }
   return el;
 }
 
 export function mount(el) {
   root = el;
-  el.append(h(`<div class="page-head"><div><h2>System</h2><p>Resources and local AI runtimes, live. Click a gauge for who holds it.</p></div></div>`), h('<div data-body></div>'));
-  on('snapshot', () => { if (!root.hidden) render(); });
+  el.append(h(`<div class="page-head"><div><h2>System</h2><p>Resources and local AI runtimes, live. Click a gauge for who holds it.</p></div></div>`), h('<div data-body class="live"></div>'));
+  // snapshots come every 0.6 s while busy: redrawing under a held button would swallow its click
+  let held = false, stale = false;
+  el.addEventListener('pointerdown', () => { held = true; });
+  addEventListener('pointerup', () => { held = false; if (stale) { stale = false; setTimeout(() => { if (!root.hidden) render(); }, 60); } }, true);
+  on('snapshot', () => { if (root.hidden) return; if (held) stale = true; else render(); });
   render();
 }
 export function show() { render(); }

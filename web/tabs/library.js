@@ -1,11 +1,11 @@
 /* Library: everything generated, rendered or imported, with the settings that made it (the .json sidecar). */
-import { $, $$, h, esc, get, post, toast, fileUrl, baseName, fmtBytes, tileFor, confirmBox, saveBlob, on, go, pref, setPref } from '../app.js';
+import { $, $$, h, esc, get, post, toast, fileUrl, baseName, fmtBytes, tileFor, confirmBox, saveBlob, on, go, pref, setPref, flash } from '../app.js';
 
 let root, items = [], filter = pref('lib.filter', 'all'), q = '', selected = null;
 const FILTERS = ['all', 'image', 'video', 'gif', 'voice', 'music', 'sfx', 'svg', 'text', 'renders', 'projects'];
 const IMPORT_KIND = { video: 'video', image: 'image', gif: 'gif', svg: 'svg', audio: 'sfx' };
 
-export async function mount(el) {
+export async function mount(el, arg) {
   root = el;
   el.append(h(`<div class="page-head"><div><h2>Library</h2><p>Drop files anywhere on this page to import them.</p></div><div class="row"><input class="input" data-q placeholder="Search prompts and names" style="width:260px"><button class="btn" data-imp>Import…</button><input type="file" multiple hidden></div></div>`));
   el.append(h('<div class="row" data-f style="margin-bottom:12px"></div>'), h('<div class="split wide-side"><div data-grid></div><div class="card" data-detail><div class="empty">Select an item.</div></div></div>'));
@@ -18,6 +18,18 @@ export async function mount(el) {
   el.addEventListener('drop', (e) => { e.preventDefault(); importFiles(e.dataTransfer.files); });
   on('library-changed', () => { if (!root.hidden) load(); });
   await load();
+  if (arg?.path) reveal(arg.path);
+}
+
+/* select an item, open its details and flash its tile (a jump from System or the job tray) */
+function reveal(path) {
+  const norm = (p) => String(p).replace(/\//g, '\\').toLowerCase();
+  const it = items.find((x) => norm(x.path) === norm(path));
+  if (!it) { toast(`${baseName(path)} is no longer in the Library.`, true); return; }
+  if (filter !== 'all' && it.kind !== filter) { filter = 'all'; setPref('lib.filter', filter); }
+  if (q) { q = ''; $('[data-q]', root).value = ''; }
+  selected = it; draw(); detail(it);
+  flash($$('[data-grid] .tile', root).find((t) => t.dataset.path === it.path));
 }
 
 async function importFiles(files) {
@@ -44,7 +56,7 @@ function draw() {
   if (!list.length) { grid.append(h('<div class="empty">Nothing here yet. Make something in Generate or Orchestrate, or drop files here.</div>')); return; }
   const g = h('<div class="grid"></div>');
   for (const it of list) {
-    const t = tileFor(it); if (selected && selected.path === it.path) t.classList.add('sel');
+    const t = tileFor(it); t.dataset.path = it.path; if (selected && selected.path === it.path) t.classList.add('sel');
     t.onclick = () => { selected = it; $$('.tile.sel', g).forEach((x) => x.classList.remove('sel')); t.classList.add('sel'); detail(it); };
     g.append(t);
   }
@@ -95,4 +107,4 @@ async function regenerate(m) {
   } catch (e) { toast(e.message, true); }
 }
 
-export function show() { load(); }
+export async function show(arg) { await load(); if (arg?.path) reveal(arg.path); }

@@ -1,4 +1,6 @@
 /* Media Studio shell: tabs, the live event stream, the job tray, and helpers every tab shares. */
+import { play, isMuted, setMuted } from './sfx.js';
+export { play as sound };
 
 export const $ = (sel, root = document) => root.querySelector(sel);
 export const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -52,8 +54,15 @@ function connect() {
     emit('snapshot', s); renderStatus();
   });
   es.addEventListener('job', (e) => {
-    const j = JSON.parse(e.data); store.jobs.set(j.id, j); emit('job', j); renderStatus();
+    const j = JSON.parse(e.data), prev = store.jobs.get(j.id);
+    store.jobs.set(j.id, j); emit('job', j); renderStatus();
     if (j.status === 'done') emit('library-changed', j);
+    // a job that just ended: chime for a new file, a soft tone for errors and stops
+    if ((!prev || STATUS_ACTIVE.includes(prev.status)) && j.preset !== 'agent') { // the Agent tab sounds its own turns
+      if (j.status === 'done') play(j.output ? 'complete' : 'success');
+      else if (j.status === 'error') play('error');
+      else if (j.status === 'cancelled') play('cancel');
+    }
   });
   es.addEventListener('text', (e) => emit('text', JSON.parse(e.data)));
   es.addEventListener('proxy', (e) => emit('proxy', JSON.parse(e.data)));
@@ -78,26 +87,58 @@ export function cancelJob(id) { return post('/api/cancel', { id }); }
 /* ---------- toast, modal ---------- */
 let toastTimer;
 export function toast(msg, err) {
-  const t = $('#toast'); t.textContent = msg; t.className = 'toast' + (err ? ' err' : ''); t.hidden = false;
-  clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, err ? 6000 : 2800);
+  const t = $('#toast'), was = t.classList.contains('show');
+  t.innerHTML = `<span class="ti">${err ? '!' : '✓'}</span><span></span>`; t.lastChild.textContent = msg;
+  t.className = 'toast show' + (err ? ' err' : '');
+  if (was && !reduced()) t.animate([{ scale: 1 }, { scale: 1.05 }, { scale: 1 }], { duration: 320, easing: 'ease-out' });
+  play(err ? 'error' : 'pop');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), err ? 6000 : 2800);
 }
 export function modal(title, body, buttons = []) {
   return new Promise((resolve) => {
     const back = h(`<div class="modal-back"><div class="modal" role="dialog" aria-modal="true"><header><h3 class="grow">${esc(title)}</h3><button class="btn ghost sm" data-x>✕</button></header><div class="body"></div><footer></footer></div></div>`);
-    const close = (v) => { back.remove(); document.removeEventListener('keydown', key, true); resolve(v); };
+    let closed = false;
+    const close = (v) => {
+      if (closed) return; closed = true;
+      document.removeEventListener('keydown', key, true); resolve(v);
+      back.classList.add('out'); setTimeout(() => back.remove(), reduced() ? 0 : 220);
+    };
     const key = (e) => { if (e.key === 'Escape') { e.stopPropagation(); close(null); } };
     $('.body', back).append(typeof body === 'string' ? h(`<div>${body}</div>`) : body);
     for (const b of buttons) {
       const el = h(`<button class="btn ${b.primary ? 'primary' : ''} ${b.danger ? 'danger' : ''}">${esc(b.label)}</button>`);
-      el.onclick = () => close(b.value !== undefined ? b.value : (b.get ? b.get() : b.label)); $('footer', back).append(el);
+      el.onclick = () => { if (b.danger) play('trash'); close(b.value !== undefined ? b.value : (b.get ? b.get() : b.label)); }; $('footer', back).append(el);
     }
     if (!buttons.length) $('footer', back).remove();
     $('[data-x]', back).onclick = () => close(null);
     back.addEventListener('mousedown', (e) => { if (e.target === back) close(null); });
     document.addEventListener('keydown', key, true);
     document.body.append(back);
+    play('open');
     back.close = close;
   });
+}
+
+/* ---------- motion helpers ---------- */
+export const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+const EASE = 'cubic-bezier(.32, .72, 0, 1)';
+/* shrink an element away (height, fade, scale), then remove it */
+export function collapse(el) {
+  if (reduced()) { el.remove(); return Promise.resolve(); }
+  const cs = getComputedStyle(el);
+  el.style.overflow = 'hidden';
+  const a = el.animate([
+    { height: el.offsetHeight + 'px', opacity: 1, transform: 'none', paddingTop: cs.paddingTop, paddingBottom: cs.paddingBottom },
+    { height: '0px', opacity: 0, transform: 'scale(.94)', paddingTop: '0px', paddingBottom: '0px', marginTop: '-6px' },
+  ], { duration: 340, easing: EASE });
+  return a.finished.then(() => el.remove(), () => el.remove());
+}
+/* scroll an element into view and flash it: where a jump from elsewhere landed */
+export function flash(el) {
+  if (!el) return;
+  el.scrollIntoView({ block: 'center', behavior: reduced() ? 'auto' : 'smooth' });
+  el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  setTimeout(() => el.classList.remove('flash'), 1700);
 }
 export async function confirmBox(title, text, okLabel = 'OK', danger) {
   return modal(title, `<p>${esc(text)}</p>`, [{ label: 'Cancel', value: false }, { label: okLabel, value: true, primary: !danger, danger }]);
@@ -216,17 +257,30 @@ export const jobLabel = (j) => `${j.preset}${j.model && j.model !== j.preset ? '
 export function jobCard(j, opts = {}) {
   const el = h(`<div class="job ${j.status === 'error' ? 'error' : ''}"><div class="head"><span class="st ${j.status}">${j.status}</span><span class="grow" title="${esc(j.task)}"><b>${esc(jobLabel(j))}</b> <span class="dim">${esc(j.task || '')}</span></span><span class="num small dim">${secs(j.elapsedS ?? Math.round(((j.ended || Date.now() / 1000) - j.started)))}</span></div></div>`);
   if (STATUS_ACTIVE.includes(j.status)) {
-    el.append(h(`<div class="bar"><i style="width:${Math.round((j.progress || 0) * 100)}%"></i></div>`));
+    // cards are redrawn often: a negative delay keeps the sheen moving instead of restarting
+    el.append(h(`<div class="bar"><i style="width:${Math.round((j.progress || 0) * 100)}%;animation-delay:-${(performance.now() % 1800) / 1000}s"></i></div>`));
     const c = h('<button class="btn ghost sm" title="Cancel">✕</button>'); c.onclick = () => cancelJob(j.id); $('.head', el).append(c);
   }
   if (j.error) el.append(h(`<div class="small" style="color:var(--danger);margin-top:4px">${esc(j.error)}</div>`));
-  if (j.output && j.status === 'done' && !opts.noOutput) {
-    const row = h(`<div class="row small" style="margin-top:6px"><span class="grow mono dim" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(baseName(j.output))}</span></div>`);
-    const o = h('<button class="btn ghost sm">Open</button>'); o.onclick = () => post('/api/open', { path: j.output });
-    const r = h('<button class="btn ghost sm">Show</button>'); r.onclick = () => post('/api/reveal', { path: j.output });
-    row.append(o, r); el.append(row);
-  }
+  if (!opts.noOutput) { const row = jobLinks(j); if (row) { row.style.marginTop = '6px'; el.append(row); } }
   return el;
+}
+/* where a job's result lives in the app: the chat for an agent turn, the Library for a file */
+export function jobTarget(j) {
+  if (STATUS_ACTIVE.includes(j.status)) return null;
+  if (j.preset === 'agent') return { tab: 'agent', label: 'Open chat', arg: { sid: j.sid, task: j.task } };
+  if (j.output && j.status === 'done') return { tab: 'library', label: 'Open in Library', arg: { path: j.output } };
+  return null;
+}
+export function openJob(j) { const t = jobTarget(j); if (t) { $('#tray').hidden = true; go(t.tab, t.arg); } }
+/* a row with the job's output name, the in-app jump, and Show in Explorer for files */
+export function jobLinks(j) {
+  const t = jobTarget(j); if (!t) return null;
+  const row = h(`<div class="row small"><span class="grow mono dim" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(j.output ? baseName(j.output) : 'chat with qwen')}</span></div>`);
+  const o = h(`<button class="btn sm primary">${t.label}</button>`); o.onclick = (e) => { e.stopPropagation(); openJob(j); };
+  row.append(o);
+  if (j.output) { const r = h('<button class="btn ghost sm" title="Show in Explorer">📂</button>'); r.onclick = (e) => { e.stopPropagation(); post('/api/reveal', { path: j.output }).catch((err) => toast(err.message, true)); }; row.append(r); }
+  return row;
 }
 function renderStatus() {
   const s = store.snap;
@@ -254,10 +308,29 @@ async function checkOnline() {
 /* theme: system by default, toggled light/dark, remembered */
 function setTheme(t) { if (t) document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme; try { localStorage.setItem('ms.theme', t || ''); } catch (e) { /* storage off */ } }
 try { setTheme(localStorage.getItem('ms.theme') || ''); } catch (e) { /* storage off */ }
-$('#theme').onclick = () => {
+$('#theme').onclick = (e) => {
   const dark = document.documentElement.dataset.theme ? document.documentElement.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
-  setTheme(dark ? 'light' : 'dark');
+  play(dark ? 'off' : 'on');
+  if (!document.startViewTransition || reduced()) { setTheme(dark ? 'light' : 'dark'); return; }
+  // the new theme grows as a circle out of the button
+  const x = e.clientX, y = e.clientY, r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+  document.startViewTransition(() => setTheme(dark ? 'light' : 'dark')).ready.then(() => {
+    document.documentElement.animate({ clipPath: [`circle(0 at ${x}px ${y}px)`, `circle(${r}px at ${x}px ${y}px)`] },
+      { duration: 650, easing: EASE, pseudoElement: '::view-transition-new(root)' });
+  });
 };
+/* sound on/off */
+const SPK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4z"/>';
+const drawMute = () => { $('#mute').innerHTML = SPK + (isMuted() ? '<path d="M22 9l-6 6M16 9l6 6"/></svg>' : '<path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>'); $('#mute').title = isMuted() ? 'Sounds off' : 'Sounds on'; };
+$('#mute').onclick = () => { setMuted(!isMuted()); drawMute(); };
+drawMute();
+/* interface sounds for common controls, delegated so every tab gets them */
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b || b.disabled) return;
+  if (b.matches('.tab, .seg button, .preset')) play('tick');
+  else if (b.matches('.btn.primary')) play('tap');
+}, true);
+document.addEventListener('change', (e) => { if (e.target.matches?.('input[type=checkbox]')) play(e.target.checked ? 'on' : 'off'); }, true);
 
 /* ---------- tabs ---------- */
 const I = (d) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
@@ -278,25 +351,45 @@ export async function go(id, arg) {
   if (!TABS.some((t) => t.id === id)) id = 'orchestrate';
   if (current === id && arg === undefined) return;
   if (current && mounted[current]) { mounted[current].el.hidden = true; mounted[current].mod.hide?.(); }
+  const switching = current !== id;
   current = id;
   $$('.tab').forEach((t) => t.setAttribute('aria-selected', String(t.dataset.id === id)));
+  placeInk();
   if (location.hash !== '#' + id) history.replaceState(null, '', '#' + id);
   try { localStorage.setItem('ms.tab', id); } catch (e) { /* storage off */ }
+  let el;
   if (!mounted[id]) {
-    const el = h('<section class="page"></section>'); $('#view').append(el);
+    el = h('<section class="page"></section>'); $('#view').append(el);
     const mod = await import(`./tabs/${id}.js`);
     mounted[id] = { el, mod };
+    enter(el);
     await mod.mount(el, arg);
   } else {
-    mounted[id].el.hidden = false;
-    mounted[id].mod.show?.(arg);
+    el = mounted[id].el; el.hidden = false;
+    if (switching) enter(el);
+    await mounted[id].mod.show?.(arg);
   }
+}
+/* a page arriving: rises and fades in */
+function enter(el) {
+  if (reduced()) return;
+  $('#view').scrollTop = 0;
+  el.animate([{ opacity: 0, transform: 'translateY(10px) scale(.995)' }, { opacity: 1, transform: 'none' }], { duration: 480, easing: 'cubic-bezier(.22, 1, .36, 1)' });
 }
 export const currentTab = () => current;
 for (const t of TABS) {
   const b = h(`<button class="tab" role="tab" data-id="${t.id}">${t.icon}${t.label}</button>`);
   b.onclick = () => go(t.id); $('#tabs').append(b);
 }
+/* the selection pill slides between tabs */
+const ink = h('<i class="tab-ink" aria-hidden="true"></i>'); $('#tabs').prepend(ink);
+function placeInk() {
+  const t = $(`.tab[data-id="${current}"]`); if (!t) return;
+  ink.style.width = t.offsetWidth + 'px'; ink.style.transform = `translateX(${t.offsetLeft}px)`;
+  if (!ink.classList.contains('ready')) setTimeout(() => ink.classList.add('ready'), 60); // first placement without a slide
+}
+addEventListener('resize', placeInk);
+document.fonts?.ready.then(placeInk);
 /* keyboard: the visible tab gets keys unless typing in a field */
 document.addEventListener('keydown', (e) => {
   if (e.target.closest('input, textarea, select, [contenteditable]') || document.querySelector('.modal-back')) return;

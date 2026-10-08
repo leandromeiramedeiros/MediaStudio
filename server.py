@@ -5,6 +5,7 @@
 --open opens the app window (Chrome --app) and, when a server already runs, only that. The server exits after
 15 minutes with no window open and no job running. Started without a console by MediaStudio.vbs.
 """
+import ctypes
 import hashlib
 import json
 import mimetypes
@@ -18,6 +19,7 @@ import time
 import traceback
 import urllib.parse
 import urllib.request
+from ctypes import wintypes
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 from studio import agent, comfy, media, orchestrate, qwen, resources
@@ -288,11 +290,22 @@ def library_items(kind=None):
     return items
 
 
+class _FileOp(ctypes.Structure):
+    _fields_ = [("hwnd", wintypes.HWND), ("wFunc", wintypes.UINT), ("pFrom", wintypes.LPCWSTR), ("pTo", wintypes.LPCWSTR),
+                ("fFlags", ctypes.c_ushort), ("fAnyOperationsAborted", wintypes.BOOL), ("hNameMappings", ctypes.c_void_p),
+                ("lpszProgressTitle", wintypes.LPCWSTR)]
+
+
 def recycle(path):
-    """Send to the Recycle Bin (never a hard delete)."""
-    ps = ("Add-Type -AssemblyName Microsoft.VisualBasic; [Microsoft.VisualBasic.FileIO.FileSystem]::DeleteFile("
-          f"'{path.replace(chr(39), chr(39) * 2)}', 'OnlyErrorDialogs', 'SendToRecycleBin')")
-    subprocess.run(["powershell", "-NoProfile", "-Command", ps], capture_output=True, creationflags=NO_WINDOW, timeout=30)
+    """Send to the Recycle Bin (never a hard delete). SHFileOperationW: in-process, no PowerShell start-up."""
+    path = os.path.abspath(path)
+    if not os.path.exists(path):
+        return
+    # FO_DELETE, FOF_ALLOWUNDO | FOF_NOCONFIRMATION | FOF_SILENT | FOF_NOERRORUI; pFrom is double-NUL terminated
+    op = _FileOp(None, 3, path + "\0", None, 0x40 | 0x10 | 0x04 | 0x400, False, None, None)
+    rc = ctypes.windll.shell32.SHFileOperationW(ctypes.byref(op))
+    if rc or op.fAnyOperationsAborted:
+        raise JobError(f"could not recycle {os.path.basename(path)} (code {rc})", 2)
 
 
 def open_window(url):
@@ -333,8 +346,10 @@ class Handler(BaseHTTPRequestHandler):
         self._json({"error": msg}, code)
 
     def _body(self):
-        n = int(self.headers.get("Content-Length") or 0)
-        return self.rfile.read(n) if n else b""
+        if getattr(self, "_raw", None) is None:
+            n = int(self.headers.get("Content-Length") or 0)
+            self._raw = self.rfile.read(n) if n else b""
+        return self._raw
 
     def _file(self, path, ctype=None, cache=False):
         if not os.path.isfile(path):
@@ -404,6 +419,10 @@ class Handler(BaseHTTPRequestHandler):
             return self._err(f"{type(e).__name__}: {e}", 500)
 
     def do_POST(self):
+        # read the body up front: a handler that ignores it would leave it in the keep-alive socket,
+        # where it prefixes the next request line ('{}GET ...' -> 501)
+        self._raw = None
+        self._body()
         if not self._host_ok() or self.headers.get("X-Studio") != "1":
             return self._err("forbidden", 403)
         u = urllib.parse.urlparse(self.path)
@@ -758,7 +777,7 @@ def p_agent_new(h, q):
 def p_agent_send(h, q):
     b = body_json(h)
     sid = b["sid"]
-    job = Job("agent", "qwen", qwen.MODEL_TAG, b.get("text", ""))
+    job = Job("agent", "qwen", qwen.MODEL_TAG, b.get("text", ""), sid=sid)
 
     def fn(job):
         agent.turn(sid, b.get("text", ""), b.get("images") or [], b.get("files") or [], think=bool(b.get("think")),

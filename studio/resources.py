@@ -292,7 +292,7 @@ def jobs(limit=80):
                      "elapsedS": round(end - (j.get("started") or end)), "error": (j.get("error") or "")[:160] or None,
                      "pid": j.get("pid"), "started": j.get("started"), "inTokens": j.get("prompt_tokens"),
                      "loadS": j.get("load_s"), "peakVramGB": j.get("peak_vram_gb"), "ramGB": j.get("ram_gb"),
-                     "output": j.get("output"), "truncated": bool(j.get("truncated")), "seed": j.get("seed")})
+                     "output": j.get("output"), "truncated": bool(j.get("truncated")), "seed": j.get("seed"), "sid": j.get("sid")})
     order = {"loading": 0, "running": 0}
     rows.sort(key=lambda r: order.get(r["status"], 1))
     return rows
