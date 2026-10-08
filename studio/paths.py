@@ -18,7 +18,7 @@ KINDS = ("image", "video", "voice", "music", "sfx", "text", "svg", "gif", "rende
 
 AI_DIR = os.path.join(os.path.expanduser("~"), "AI")
 LLAMA_SERVER = os.path.join(AI_DIR, "llama.cpp", "llama-server.exe")
-QWEN_MODEL = os.path.join(AI_DIR, "models", "llm", "Qwen3.8-27B-UD-IQ4_XS.gguf")
+QWEN_MODEL = os.path.join(AI_DIR, "models", "llm", "Swift-1.5-Qwen3.8-27B-IQ3_M.gguf")
 QWEN_PROJ = os.path.join(AI_DIR, "models", "llm", "Qwen3.8-27B-mmproj.gguf")
 
 COMFY_DESKTOP = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Comfy-Desktop")

@@ -1,7 +1,7 @@
-"""Text and image jobs on the local Qwen3.8-27B (llama.cpp's llama-server). Text and images in, text out.
+"""Text and image jobs on the local Swift-1.5-Qwen3.8-27B (llama.cpp's llama-server). Text and images in, text out.
 
 Runtime: ~/AI/llama.cpp/llama-server.exe (official CUDA 13 build) on port 8091, started on demand with
-~/AI/models/llm/Qwen3.8-27B-UD-IQ4_XS.gguf and its vision projector: whole model on the GPU, 32k context shared by
+~/AI/models/llm/Swift-1.5-Qwen3.8-27B-IQ3_M.gguf and its vision projector: whole model on the GPU, 32k context shared by
 2 slots, q4 KV cache, about 53 tok/s. A detached watchdog stops it after 10 idle minutes or when DD2 starts.
 Deterministic: temperature 0 and a fixed seed, so the same input gives the same answer. Offline by default; with
 online=True and a working connection it may also search the web and fetch pages (studio/web.py).
@@ -31,7 +31,7 @@ EFFORT = [(False, 1), (False, 2), (False, 4), (True, 4), (True, None)]
 IDLE_S = 600
 MAX_CTX = 32768
 MODEL_KEY = "qwen"
-MODEL_TAG = "Qwen3.8-27B UD-IQ4_XS (llama-server)"
+MODEL_TAG = "Swift-1.5-Qwen3.8-27B IQ3_M (llama-server)"
 DEFAULT_SEED = 42
 
 PRESETS = {

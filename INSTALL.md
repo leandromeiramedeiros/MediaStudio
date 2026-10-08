@@ -48,8 +48,8 @@ python server.py                                   # then open http://127.0.0.1:
 1. Download the official llama.cpp Windows release: the **CUDA 13** zip plus the matching **cudart** zip (reference: build b11457).
    Unzip both into `~/AI/llama.cpp/` so `llama-server.exe` and `cudart64_13.dll` sit side by side.
 2. Download into `~/AI/models/llm/`, with these exact file names (rename if needed):
-   - `Qwen3.8-27B-UD-IQ4_XS.gguf` (13.3 GB, unsloth GGUF of Qwen3.8-27B)
-   - `Qwen3.8-27B-mmproj.gguf` (0.9 GB, the vision projector from the same repo)
+   - `Swift-1.5-Qwen3.8-27B-IQ3_M.gguf` (14.9 GB, from `ukisai/Swift-1.5-Qwen3.8-27B-GGUF`; rename if needed)
+   - `Qwen3.8-27B-mmproj.gguf` (0.9 GB, the vision projector from the unsloth Qwen3.8-27B GGUF repo; the Swift repo ships none)
 
 Do not hand-start it for the app. `qwen.start()` launches it on port 8091 with
 `-ngl 999 -fa on -c 32768 -ctk q4_0 -ctv q4_0 --parallel 2 -kvu --jinja --mmproj ...`, plus a detached idle watchdog.

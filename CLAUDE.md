@@ -32,7 +32,7 @@ When reporting to me, be extremely concise and sacrifice grammar for sake of con
 
 ## Runtimes (one 16 GB GPU)
 
-- qwen: `~/AI/llama.cpp/llama-server.exe` with Qwen3.8-27B UD-IQ4_XS + mmproj (`~/AI/models/llm/`), port 8091, `--jinja` (tool calls).
+- qwen: `~/AI/llama.cpp/llama-server.exe` with Swift-1.5-Qwen3.8-27B IQ3_M + Qwen3.8 mmproj (`~/AI/models/llm/`), port 8091, `--jinja` (tool calls).
   It runs 32k context shared by 2 slots at about 53 tok/s and needs 15.4 GB.
 - ComfyUI: headless from the Desktop install's `.venv` on port 8188. Models in `~/AI/models`.
   A ComfyUI that the Desktop app runs is used as is and never stopped.

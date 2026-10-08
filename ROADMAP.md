@@ -15,6 +15,16 @@ user before each big download, as `INSTALL.md` says.
 - Add the measured speed and VRAM use on the 16 GB card to `bench/BENCHMARKS.md`.
 - Everything stays local and offline. No content filter in the app: uncensored means the models, not added code.
 
+## 0. Qwen model follow-ups (Swift 1.5)
+
+- Swapped qwen to `ukisai/Swift-1.5-Qwen3.8-27B-GGUF` **IQ3_M** (14.9 GB, the largest quant that fits 16 GB with mmproj and
+  32k q4 KV). Not benchmarked and the vision projector is the unsloth Qwen3.8 one: untested with Swift. If the app misbehaves,
+  revert `QWEN_MODEL` in `studio/paths.py` to `Qwen3.8-27B-UD-IQ4_XS.gguf`.
+- Swift IQ4_XS (15.5 GB) does not fit with vision. Retry if VRAM allows (smaller context, no vision, or a bigger card).
+- Run `bench/LocalBench.py` on Swift IQ3_M vs unsloth UD-IQ4_XS (tok/s, thinking tokens, SVG, image text, Orchestrate) and update
+  `bench/BENCHMARKS.md` (still describes the old model).
+- The NVFP4 repo (`Swift-1.5-Qwen3.8-27b-NVFP4`) needs vLLM and a Blackwell GPU: not for llama-server.
+
 Suggested order: 1 voice clone (small, reuses the existing node pack), 2 edit + upscale, 3 Wan.
 
 ## 1. Voice clone (`clone` preset, or a mode of `voice`)
