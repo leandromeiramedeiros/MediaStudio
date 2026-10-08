@@ -6,21 +6,22 @@
 <title>Pixel Scroll</title>
 <style>
   html, body { margin: 0; background: #ffb86b; }
-  #spacer { height: 600vh; }              /* gives us something to scroll */
+  #stage { position: sticky; top: 0; height: 100vh; height: 100dvh; overflow: hidden; }
+  #spacer { height: 500vh; }              /* gives us something to scroll */
   canvas {
-    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     image-rendering: pixelated;           /* big chonky pixels */
   }
   h1 {
-    position: fixed; left: 0; right: 0; bottom: 4vh; margin: 0; text-align: center;
+    position: absolute; left: 0; right: 0; bottom: 4vh; margin: 0; text-align: center;
     font: 700 clamp(18px, 4vw, 40px) monospace; color: #fff3d6;
     text-shadow: 3px 3px 0 #7a3b1d; pointer-events: none; z-index: 1;
   }
 </style>
 </head>
 <body>
+<div id="stage"><h1>scroll ↓↑</h1></div>
 <div id="spacer"></div>
-<h1>scroll ↓↑</h1>
 
 <script>
 console.warn('Scripts "build/three.js" and "build/three.min.js" are deprecated with r150+, and will be removed with r160. Please use ES Modules or alternatives: https://threejs.org/docs/index.html#manual/en/introduction/Installation'),
@@ -43,7 +44,7 @@ let renderer;
 try { renderer = new THREE.WebGLRenderer({ antialias: false }); }
 catch (e) { say('WebGL unavailable: ' + e.message); throw e; }
 renderer.shadowMap.enabled = true;
-document.body.appendChild(renderer.domElement);
+document.getElementById("stage").appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(SKY);
@@ -88,7 +89,7 @@ const meshes = shapes.map(([geo, color, lift], i) => {
 });
 
 function resize() {
-  const w = innerWidth, h = innerHeight;
+  const st = document.getElementById("stage"), w = st.clientWidth, h = st.clientHeight;
   renderer.setSize(Math.ceil(w / PIXEL), Math.ceil(h / PIXEL), false); // tiny buffer, CSS scales it up
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
