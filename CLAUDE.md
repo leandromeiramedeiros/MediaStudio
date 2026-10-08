@@ -22,6 +22,8 @@ When reporting to me, be extremely concise and sacrifice grammar for sake of con
 
 ## Run
 
+- Fresh machine or a broken runtime: follow `INSTALL.md` (setup steps with checks, model files and sources).
+
 - `MediaStudio.vbs` (desktop shortcut): pythonw `server.py --open`, which opens a Chrome `--app` window. The server exits after 15 min with no window and no job.
 - Dev: `python server.py`, then preview `http://127.0.0.1:8095/#<tab>`.
   After editing JS, use `location.reload()`: a hash-only navigation keeps the old modules.
