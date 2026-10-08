@@ -1,0 +1,300 @@
+[2026-10-06 21:27:42.083] [REFramework] [info] Saved ImGui configuration
+[2026-10-06 21:28:12.466] [REFramework] [info] [DD2_MysticSpearhandEnhanced_MageReticleProbe] active true mode 1
+[2026-10-06 21:28:13.133] [REFramework] [info] [DD2_MysticSpearhandEnhanced_MageReticleProbe] no work in cone; MagicTarget ok dict=0 finish=0 counter=0 chara=false
+[2026-10-06 21:28:14.965] [REFramework] [info] [DD2_MysticSpearhandEnhanced_MageReticleProbe] active false mode 1
+[2026-10-06 21:28:17.623] [REFramework] [info] [DD2_MysticSpearhandEnhanced_MageReticleProbe] active true mode 1
+[2026-10-06 21:28:21.257] [REFramework] [info] [DD2_MysticSpearhandEnhanced_MageReticleProbe] no work in cone; MagicTarget ok dict=0 finish=0 counter=0 chara=false
+[2026-10-06 21:28:25.258] [REFramework] [info] [DD2_MysticSpearhandEnhanced_MageReticleProbe] no work in cone; MagicTarget ok dict=0 finish=0 counter=0 chara=false
+[2026-10-06 21:28:29.257] [REFramework] [info] [DD2_MysticSpearhandEnhanced_MageReticleProbe] no work in cone; MagicTarget ok dict=0 finish=0 counter=0 chara=false
+[2026-10-06 21:28:33.259] [REFramework] [info] [DD2_MysticSpearhandEnhanced_MageReticleProbe] no work in cone; MagicTarget ok dict=0 finish=0 counter=0 chara=false
+[2026-10-06 21:28:37.342] [REFramework] [info] [DD2_MysticSpearhandEnhanced_MageReticleProbe] no work in cone; MagicTarget ok dict=0 finish=0 counter=0 chara=false
+[2026-10-06 21:28:41.341] [REFramework] [info] [DD2_MysticSpearhandEnhanced_MageReticleProbe] no work in cone; MagicTarget ok dict=0 finish=0 counter=0 chara=false
+[2026-10-06 21:28:45.341] [REFramework] [info] [DD2_MysticSpearhandEnhanced_MageReticleProbe] no work in cone; MagicTarget ok dict=0 finish=0 counter=0 chara=false
+[2026-10-06 21:28:49.342] [REFramework] [info] [DD2_MysticSpearhandEnhanced_MageReticleProbe] no work in cone; MagicTarget ok dict=0 finish=0 counter=0 chara=false
+[2026-10-06 21:28:53.342] [REFramework] [info] [DD2_MysticSpearhandEnhanced_MageReticleProbe] no work in cone; MagicTarget ok dict=0 finish=0 counter=0 chara=false
+[2026-10-06 21:28:57.342] [REFramework] [info] [DD2_MysticSpearhandEnhanced_MageReticleProbe] no work in cone; MagicTarget ok dict=0 finish=0 counter=0 chara=false
+[2026-10-06 21:29:01.342] [REFramework] [info] [DD2_MysticSpearhandEnhanced_MageReticleProbe] no work in cone; MagicTarget ok dict=0 finish=0 counter=0 chara=false
+[2026-10-06 21:29:05.343] [REFramework] [info] [DD2_MysticSpearhandEnhanced_MageReticleProbe] no work in cone; MagicTarget ok dict=0 finish=0 counter=0 chara=false
+[2026-10-06 21:29:09.344] [REFramework] [info] [DD2_MysticSpearhandEnhanced_MageReticleProbe] no work in cone; MagicTarget ok dict=0 finish=0 counter=0 chara=false
+[2026-10-06 21:29:13.343] [REFramework] [info] [DD2_MysticSpearhandEnhanced_MageReticleProbe] no work in cone; MagicTarget ok dict=0 finish=0 counter=0 chara=false
+[2026-10-06 21:29:17.344] [REFramework] [info] [DD2_MysticSpearhandEnhanced_MageReticleProbe] no work in cone; MagicTarget ok dict=0 finish=0 counter=0 chara=false
+[2026-10-06 21:29:21.345] [REFramework] [info] [DD2_MysticSpearhandEnhanced_MageReticleProbe] no work in cone; MagicTarget ok dict=0 finish=0 counter=0 chara=false
+[2026-10-06 21:29:25.345] [REFramework] [info] [DD2_MysticSpearhandEnhanced_MageReticleProbe] no work in cone; MagicTarget ok dict=0 finish=0 counter=0 chara=false
+[2026-10-06 21:29:29.345] [REFramework] [info] [DD2_MysticSpearhandEnhanced_MageReticleProbe] no work in cone; MagicTarget ok dict=0 finish=0 counter=0 chara=false
+[2026-10-06 21:29:33.345] [REFramework] [info] [DD2_MysticSpearhandEnhanced_MageReticleProbe] no work in cone; MagicTarget ok dict=0 finish=0 counter=0 chara=false
+[2026-10-06 21:29:37.345] [REFramework] [info] [DD2_MysticSpearhandEnhanced_MageReticleProbe] no work in cone; MagicTarget ok dict=0 finish=0 counter=0 chara=false
+[2026-10-06 21:29:37.980] [REFramework] [info] VMContext: Caught exception code c0000005
+[2026-10-06 21:29:37.980] [REFramework] [info] VMContext: Attempting to handle access violation. Attempting to dump callstack...
+[2026-10-06 21:29:37.980] [REFramework] [error] RIP: 7ff664d6726e
+[2026-10-06 21:29:37.980] [REFramework] [error] RSP: 560b3fe590
+[2026-10-06 21:29:37.980] [REFramework] [error] RCX: fffffffe
+[2026-10-06 21:29:37.980] [REFramework] [error] RDX: 7ff66bed6c40
+[2026-10-06 21:29:37.980] [REFramework] [error] R8: 5fac0
+[2026-10-06 21:29:37.980] [REFramework] [error] R9: 1769d491a80
+[2026-10-06 21:29:37.980] [REFramework] [error] R10: c0000000
+[2026-10-06 21:29:37.980] [REFramework] [error] R11: 1
+[2026-10-06 21:29:37.980] [REFramework] [error] R12: 1754c3a2df0
+[2026-10-06 21:29:37.980] [REFramework] [error] R13: 17601680b20
+[2026-10-06 21:29:37.980] [REFramework] [error] R14: 1754c3a2ec0
+[2026-10-06 21:29:37.980] [REFramework] [error] R15: 17
+[2026-10-06 21:29:37.980] [REFramework] [error] RAX: 0
+[2026-10-06 21:29:37.980] [REFramework] [error] RBX: 1707bd7a150
+[2026-10-06 21:29:37.980] [REFramework] [error] RBP: 9d491a80
+[2026-10-06 21:29:37.980] [REFramework] [error] RSI: 1754c3a2eb0
+[2026-10-06 21:29:37.980] [REFramework] [error] RDI: 1738da1bbc0
+[2026-10-06 21:29:37.980] [REFramework] [error] EFLAGS: 10246
+[2026-10-06 21:29:37.980] [REFramework] [error] CS: 33
+[2026-10-06 21:29:37.980] [REFramework] [error] DS: 2b
+[2026-10-06 21:29:37.980] [REFramework] [error] ES: 2b
+[2026-10-06 21:29:37.980] [REFramework] [error] FS: 53
+[2026-10-06 21:29:37.980] [REFramework] [error] GS: 2b
+[2026-10-06 21:29:37.980] [REFramework] [error] SS: 2b
+[2026-10-06 21:29:37.983] [REFramework] [error] Call stack:
+[2026-10-06 21:29:37.985] [REFramework] [info] [Scan.cpp:2205] Adding 30092 entries for module 7ffd7e010000
+[2026-10-06 21:29:37.986] [REFramework] [info] [Scan.cpp:2222] Filtered and sorted entries down to 30092 for module 7ffd7e010000
+[2026-10-06 21:29:37.986] [REFramework] [info] [Scan.cpp:1707] Adding remaining 1420 entries to last bucket for module 7ffd7e010000
+[2026-10-06 21:29:37.988] [REFramework] [info] [Scan.cpp:2205] Adding 5650 entries for module 7ffe1e320000
+[2026-10-06 21:29:37.988] [REFramework] [info] [Scan.cpp:2222] Filtered and sorted entries down to 5650 for module 7ffe1e320000
+[2026-10-06 21:29:37.988] [REFramework] [info] [Scan.cpp:1707] Adding remaining 1554 entries to last bucket for module 7ffe1e320000
+[2026-10-06 21:29:37.990] [REFramework] [info] [Scan.cpp:2205] Adding 1530 entries for module 7ffe1d500000
+[2026-10-06 21:29:37.990] [REFramework] [info] [Scan.cpp:2222] Filtered and sorted entries down to 1530 for module 7ffe1d500000
+[2026-10-06 21:29:37.990] [REFramework] [error] 
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x5dd178
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x5bc108
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x7c7eef
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x7cbe21
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x7cba77
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x7cc78e
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x7cc7f6
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x7c8cc5
+
+ _chkstk
+  C:\WINDOWS\SYSTEM32\ntdll.dll + 0x1654ff
+
+ RtlWow64GetCurrentMachine
+  C:\WINDOWS\SYSTEM32\ntdll.dll + 0xcbd25
+
+ KiUserExceptionDispatcher
+  C:\WINDOWS\SYSTEM32\ntdll.dll + 0x164e3e
+
+ app.QuestManager.getQuestActionResultNo
+  C:\Program Files (x86)\Steam\steamapps\common\Dragons Dogma 2\DD2.exe + 0x513726e
+
+ System.Collections.Generic.Dictionary`2<app.LockOnTargetWork,app.ui020802.MagicReticle>.TryInsert
+  C:\Program Files (x86)\Steam\steamapps\common\Dragons Dogma 2\DD2.exe + 0x4f9b680
+
+ AK::WriteBytesCount::SetCount [TDB: app.ui020802.addTargetList]
+  C:\Program Files (x86)\Steam\steamapps\common\Dragons Dogma 2\DD2.exe + 0x86e7500
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x5b5c4c
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x5b5846
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x3bbd5a
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x3bbc54
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x3bbf05
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x3b484c
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x23bd70
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x244d38
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x8e96b
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x61420f
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x61f276
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x613a36
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x6146a3
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x613e84
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x602ae6
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x605541
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x61420f
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x61f276
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x613a36
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x6146a3
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x613e84
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x602ae6
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x80649
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x1014c9
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0xfda5a
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x1c42a6
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x1c41b8
+
+ DirectInput8Create
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x34970
+
+ DirectInput8Create
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x5d963
+
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0xb5507
+
+ app.LightBlinkPlayerBase.update
+  C:\Program Files (x86)\Steam\steamapps\common\Dragons Dogma 2\DD2.exe + 0x51788c5
+
+ app.TowerReLibLightBehavior.switchDrawSelf
+  C:\Program Files (x86)\Steam\steamapps\common\Dragons Dogma 2\DD2.exe + 0x399ad
+
+ app.LightBlinkPlayerBase.update
+  C:\Program Files (x86)\Steam\steamapps\common\Dragons Dogma 2\DD2.exe + 0x51784d2
+
+ app.CharacterEditManager.<>c__DisplayClass718_0.<tryChoiseTattoosShader>b__0
+  C:\Program Files (x86)\Steam\steamapps\common\Dragons Dogma 2\DD2.exe + 0xed6e57
+
+ BaseThreadInitThunk
+  C:\WINDOWS\System32\KERNEL32.DLL + 0x2cd87
+
+ RtlUserThreadStart
+  C:\WINDOWS\SYSTEM32\ntdll.dll + 0xacaec
+
+
+[2026-10-06 21:29:37.991] [REFramework] [error] Exception thrown in REMethodDefinition::invoke for app.GuiManager.addMagicTargetList
+[2026-10-06 21:29:37.991] [REFramework] [error] 0
+[2026-10-06 21:29:37.991] [REFramework] [info] No fix necessary
+[2026-10-06 21:29:37.992] [REFramework] [error] Internal game exception thrown in REMethodDefinition::invoke for System.Collections.Generic.Dictionary`2<app.LockOnTargetWork,app.ui020802.MagicReticle>.get_Item
+[2026-10-06 21:29:37.992] [REFramework] [error]  Exception name: System.Collections.Generic.KeyNotFoundException
+[2026-10-06 21:29:37.992] [REFramework] [info] [DD2_MysticSpearhandEnhanced_MageReticleProbe] draw false (addMagicTargetList: lua: error: Invoke threw an exception) MagicTarget ok dict=1 finish=0 counter=1 chara=false
+[2026-10-06 21:29:38.004] [REFramework] [error] Exception occurred: c0000005
+[2026-10-06 21:29:38.005] [REFramework] [error] RIP (exception record): 7ff664e76b9e
+[2026-10-06 21:29:38.005] [REFramework] [error] RIP: 7ff664e76b9e
+[2026-10-06 21:29:38.005] [REFramework] [error] RSP: 567eb3e270
+[2026-10-06 21:29:38.005] [REFramework] [error] RCX: 170089754a0
+[2026-10-06 21:29:38.005] [REFramework] [error] RDX: 567eb3e500
+[2026-10-06 21:29:38.005] [REFramework] [error] R8: 567eb3e550
+[2026-10-06 21:29:38.005] [REFramework] [error] R9: 567eb3e558
+[2026-10-06 21:29:38.005] [REFramework] [error] R10: 7ffe00040000
+[2026-10-06 21:29:38.005] [REFramework] [error] R11: 135678a03249da0
+[2026-10-06 21:29:38.005] [REFramework] [error] R12: 173914d6248
+[2026-10-06 21:29:38.005] [REFramework] [error] R13: 173bbc604f0
+[2026-10-06 21:29:38.005] [REFramework] [error] R14: 173bf942200
+[2026-10-06 21:29:38.005] [REFramework] [error] R15: 173914d6248
+[2026-10-06 21:29:38.005] [REFramework] [error] RAX: 0
+[2026-10-06 21:29:38.005] [REFramework] [error] RBX: 0
+[2026-10-06 21:29:38.005] [REFramework] [error] RBP: 1754c3a2f00
+[2026-10-06 21:29:38.005] [REFramework] [error] RSI: 173bbc21ec0
+[2026-10-06 21:29:38.005] [REFramework] [error] RDI: 1746cd5c9b0
+[2026-10-06 21:29:38.005] [REFramework] [error] EFLAGS: 10206
+[2026-10-06 21:29:38.005] [REFramework] [error] CS: 33
+[2026-10-06 21:29:38.005] [REFramework] [error] DS: 2b
+[2026-10-06 21:29:38.005] [REFramework] [error] ES: 2b
+[2026-10-06 21:29:38.005] [REFramework] [error] FS: 53
+[2026-10-06 21:29:38.005] [REFramework] [error] GS: 2b
+[2026-10-06 21:29:38.005] [REFramework] [error] SS: 2b
+[2026-10-06 21:29:38.006] [REFramework] [error] Call stack:
+[2026-10-06 21:29:38.008] [REFramework] [info] [Scan.cpp:2205] Adding 6448 entries for module 7ffe1b9e0000
+[2026-10-06 21:29:38.008] [REFramework] [info] [Scan.cpp:2222] Filtered and sorted entries down to 6448 for module 7ffe1b9e0000
+[2026-10-06 21:29:38.008] [REFramework] [info] [Scan.cpp:1707] Adding remaining 304 entries to last bucket for module 7ffe1b9e0000
+[2026-10-06 21:29:38.008] [REFramework] [error] 
+ igTreeNode_StrStr0
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x5dd178
+
+ ImTextureData_GetTexID
+  c:\program files (x86)\steam\steamapps\common\dragons dogma 2\_storage_\dinput8.dll + 0x22892
+
+ UnhandledExceptionFilter
+  C:\WINDOWS\System32\KERNELBASE.dll + 0x10ef83
+
+ strncpy
+  C:\WINDOWS\SYSTEM32\ntdll.dll + 0x169ba0
+
+ _C_specific_handler
+  C:\WINDOWS\SYSTEM32\ntdll.dll + 0x124703
+
+ _chkstk
+  C:\WINDOWS\SYSTEM32\ntdll.dll + 0x1654ff
+
+ RtlWow64GetCurrentMachine
+  C:\WINDOWS\SYSTEM32\ntdll.dll + 0xcbd25
+
+ KiUserExceptionDispatcher
+  C:\WINDOWS\SYSTEM32\ntdll.dll + 0x164e3e
+
+ Unknown symbol
+  C:\Program Files (x86)\Steam\steamapps\common\Dragons Dogma 2\DD2.exe + 0x5246b9e
+
+ via.render.CustomFilter.WrappedArrayContainer_Filters.get_Item
+  C:\Program Files (x86)\Steam\steamapps\common\Dragons Dogma 2\DD2.exe + 0x5220110
+
+ System.Collections.Generic.EqualityComparer`1<app.MaterialInterpolationDustCover>.get_Default
+  C:\Program Files (x86)\Steam\steamapps\common\Dragons Dogma 2\DD2.exe + 0x684786
+
+ System.Collections.Generic.EqualityComparer`1<app.MaterialInterpolationDustCover>.get_Default
+  C:\Program Files (x86)\Steam\steamapps\common\Dragons Dogma 2\DD2.exe + 0x683dea
+
+ app.CharacterEditManager.<>c__DisplayClass718_0.<tryChoiseTattoosShader>b__0
+  C:\Program Files (x86)\Steam\steamapps\common\Dragons Dogma 2\DD2.exe + 0xed6e57
+
+ BaseThreadInitThunk
+  C:\WINDOWS\System32\KERNEL32.DLL + 0x2cd87
+
+ RtlUserThreadStart
+  C:\WINDOWS\SYSTEM32\ntdll.dll + 0xacaec
+
+
+[2026-10-06 21:29:38.008] [REFramework] [error] Module: 7ff65fc30000 C:\Program Files (x86)\Steam\steamapps\common\Dragons Dogma 2\DD2.exe
+[2026-10-06 21:29:38.009] [REFramework] [error] Attempting to write dump to C:\Program Files (x86)\Steam\steamapps\common\Dragons Dogma 2\reframework_crash.dmp
+[2026-10-06 21:29:38.366] [REFramework] [error] Exception occurred: c0000005
+[2026-10-06 21:29:38.366] [REFramework] [error] RIP (exception record): 7ff664d5b044
+[2026-10-06 21:29:38.366] [REFramework] [error] RIP: 7ff664d5b044

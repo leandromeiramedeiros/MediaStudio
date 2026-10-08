@@ -1,0 +1,87 @@
+DD2_WarfarerEnhanced: on Nexus 2.1
+Nexus page link added; confirmed by the cockpit's live page check: the MAIN file is 2.1.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+Workflow: lifecycle tags and Nexus tracking
+- Statuses Idea, In development, Released; tags IDEA, DEV, TEST,
+  RELEASE (zip made), NEXUS (version players download).
+- New front matter keys: nexus (set only when the user confirms an
+  upload) and nexus_url (asked at the end of nexus-page).
+- Status.sh shows RELEASE and NEXUS columns.
+- Warfarer is on Nexus at 2.1. Magick Range and Slow Motion were never
+  uploaded: back to DEV 1.0, v1.0 tags, zips and changelog sections removed.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+DD2_WarfarerEnhanced: rename DualSense Trigger option to DualSense Haptics
+- Matches Mystic Spearhand Enhanced's option name; config key dualsense unchanged.
+- Not deployed or released; Settings, Behavior and the Nexus page update at the next release.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+Release DD2_WarfarerEnhanced 2.1
+
+DD2_WarfarerEnhanced: test 26 - works; remove the menu lock
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+DD2_WarfarerEnhanced: probe 5 - grid cells keep stale copies; test 26 rebuilds open grids after a toggle
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+DD2_WarfarerEnhanced: test 25 - works, open grid redraws only on hover; probe 5 logs the grid redraw path
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+DD2_WarfarerEnhanced: test 25 - menu lock off to check toggling with a menu open
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+DD2_WarfarerEnhanced: test 24 - works
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+DD2_WarfarerEnhanced: test 23 - arsenal add refused without Rearmament slotted; test 24 lends it for the add
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+DD2_WarfarerEnhanced: Arsenal probe 3 - skill menu seeds arsenal via removeEquip + setEquip; test 23 replays it on tick
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+DD2_WarfarerEnhanced: Arsenal probe 2 - no weapon in hand, slot skips the clear; probe 3 reads weapon keys
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+DD2_WarfarerEnhanced: test 22 - held weapon refused; Arsenal probe 2 logs the base game's arsenal setup
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+DD2_WarfarerEnhanced: test 17 - restore silent; test 18 logs restore conditions
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+DD2_WarfarerEnhanced: test 16 - setArisenEquipForce throws and freezes; test 17 writes arsenal 1 directly
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+DD2_WarfarerEnhanced: test 15 - re-tick leaves arsenal empty; test 16 restores held weapon as arsenal 1
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+DD2_WarfarerEnhanced: test 14 - lock works, arsenal marks persist; test 15 logs arsenal state
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+DD2_WarfarerEnhanced: test 13 - fail, scrapped; test 14 locks Rearmament while a menu is open
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+DD2_WarfarerEnhanced: test 12 - menus ignore GUIBase cancel; test 13 injects system Cancel
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+DD2_WarfarerEnhanced: test 11 - refresh calls don't redraw; test 12 backs stale menus out on toggle
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+DD2_WarfarerEnhanced: test 10 - works unplugged; test 11 refreshes open equipment menus on arsenal changes
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+DD2_WarfarerEnhanced: test 9 - works; test 10 pad alert only with a connected gamepad
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+DD2_WarfarerEnhanced: test 8 - works; test 9 red pad alert under Rearmament
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+DD2_WarfarerEnhanced: test 8 - contextual menu, warning on top
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+DD2_WarfarerEnhanced: test 7 - works
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
