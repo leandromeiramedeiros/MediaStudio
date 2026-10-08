@@ -664,6 +664,29 @@ def p_cancel(h, q):
     h._json({"ok": RUNNER.cancel(body_json(h).get("id"))})
 
 
+def p_jobs_clear(h, q):
+    """Forgets finished jobs: one by {id}, or all of them. Running and queued jobs stay."""
+    b = body_json(h)
+    want = b.get("id")
+    live = set(RUNNER.active())
+    gone = []
+    for j in resources.jobs(10 ** 6):
+        jid = j["id"]
+        if not jid or (want and jid != want) or jid in live or j["status"] in ("loading", "running", "queued"):
+            continue
+        try:
+            os.remove(os.path.join(DATA, "jobs", jid + ".json"))
+        except OSError:
+            continue
+        RUNNER.jobs.pop(jid, None)
+        gone.append(jid)
+    if HUB.snap and gone:
+        drop = set(gone)
+        HUB.snap["jobs"] = [j for j in HUB.snap["jobs"] if j["id"] not in drop]
+    HUB.send("jobs-cleared", {"ids": gone})
+    h._json({"ok": True, "cleared": len(gone)})
+
+
 def p_runtime(h, q):
     b = body_json(h)
     mod = qwen if b.get("name") == "qwen" else comfy
@@ -802,7 +825,7 @@ GET_ROUTES.update({"/api/agent/sessions": g_agent_sessions, "/api/agent/session"
 
 POST_ROUTES = {"/api/agent/new": p_agent_new, "/api/agent/send": p_agent_send, "/api/agent/file": p_agent_file,
                "/api/agent/delete": p_agent_delete,"/api/qwen": p_qwen, "/api/comfy": p_comfy, "/api/orchestrate": p_orchestrate, "/api/render": p_render,
-               "/api/gif": p_gif, "/api/cancel": p_cancel, "/api/runtime": p_runtime, "/api/folder/state": p_folder_state,
+               "/api/gif": p_gif, "/api/cancel": p_cancel, "/api/jobs/clear": p_jobs_clear, "/api/runtime": p_runtime, "/api/folder/state": p_folder_state,
                "/api/folder/write": p_folder_write, "/api/library/save": p_library_save, "/api/project/save": p_project_save,
                "/api/upload": p_upload, "/api/reveal": p_reveal, "/api/open": p_open, "/api/delete": p_delete,
                "/api/settings": p_settings}

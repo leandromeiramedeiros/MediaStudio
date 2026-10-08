@@ -1,7 +1,7 @@
 /* System: resources and the local AI runtimes, live. The cockpit's LOCAL AI panel, rebuilt for the web:
    gauges with drill-down (per thread, per process, disk by group), 5-minute sparklines, runtime cards with
    start/stop, live job cards, and the job feed by day with per-model rollups and job details. */
-import { $, h, esc, on, post, store, secs, toast, jobCard, jobLinks } from '../app.js';
+import { $, h, esc, on, post, store, secs, toast, jobCard, jobLinks, clearJobs } from '../app.js';
 
 let root, open = new Set(), openJobs = new Set(), openDays = new Set(['TODAY']), moreDays = new Set();
 try { open = new Set(JSON.parse(localStorage.getItem('ms.sys.open') || '[]')); } catch (e) { /* storage off */ }
@@ -100,6 +100,7 @@ function render() {
   const jobs = L.jobs || [];
   const live = jobs.filter((j) => ACTIVE.includes(j.status));
   const card = h(`<div class="card" style="margin-top:12px"><div class="row"><h3 class="grow">Agents</h3><span class="small dim">${live.length ? live.length + ' working' : 'idle'}</span></div></div>`);
+  if (jobs.length > live.length) { const c = h('<button class="btn ghost sm" title="Remove every finished job from the history">Clear history</button>'); c.onclick = () => clearJobs(); $('.row', card).append(c); }
   for (const j of live) card.append(jobCard(j));
   const done = jobs.filter((j) => !ACTIVE.includes(j.status));
   const now = new Date(), today = now.toDateString(), yest = new Date(now - 864e5).toDateString();
@@ -132,7 +133,8 @@ function render() {
       for (const j of shown) {
         const d = new Date((j.started || 0) * 1000);
         const when = k === 'EARLIER' ? `${MONTHS[d.getMonth()]} ${d.getDate()}` : `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
-        const row = h(`<div class="frow"><span class="num dim">${when}</span><span><span class="st ${j.status}">${j.status}</span></span><span>${PRESET_ICON[j.preset] || '•'}</span><span class="num dim">${secs(j.elapsedS)}</span><span class="grow"><b style="color:${MODEL_COLOR[j.model] || 'inherit'}">${esc(j.model)}</b> <span class="dim">${esc(j.preset)} · ${esc(j.task || '')}</span></span></div>`);
+        const row = h(`<div class="frow"><span class="num dim">${when}</span><span><span class="st ${j.status}">${j.status}</span></span><span>${PRESET_ICON[j.preset] || '•'}</span><span class="num dim">${secs(j.elapsedS)}</span><span class="grow"><b style="color:${MODEL_COLOR[j.model] || 'inherit'}">${esc(j.model)}</b> <span class="dim">${esc(j.preset)} · ${esc(j.task || '')}</span></span><button class="btn ghost sm" title="Remove from history">✕</button></div>`);
+        $('button', row).onclick = (e) => { e.stopPropagation(); clearJobs(j.id); };
         row.onclick = () => { openJobs.has(j.id) ? openJobs.delete(j.id) : openJobs.add(j.id); render(); };
         feed.append(row);
         if (openJobs.has(j.id)) feed.append(detail(j));
@@ -166,6 +168,7 @@ export function mount(el) {
   el.addEventListener('pointerdown', () => { held = true; });
   addEventListener('pointerup', () => { held = false; if (stale) { stale = false; setTimeout(() => { if (!root.hidden) render(); }, 60); } }, true);
   on('snapshot', () => { if (root.hidden) return; if (held) stale = true; else render(); });
+  on('jobs-cleared', () => { if (!root.hidden) render(); });
   render();
 }
 export function show() { render(); }

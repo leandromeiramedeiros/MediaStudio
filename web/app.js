@@ -64,6 +64,12 @@ function connect() {
       else if (j.status === 'cancelled') play('cancel');
     }
   });
+  es.addEventListener('jobs-cleared', (e) => {
+    const ids = new Set(JSON.parse(e.data).ids);
+    for (const id of ids) store.jobs.delete(id);
+    if (store.snap) store.snap.jobs = store.snap.jobs.filter((j) => !ids.has(j.id));
+    emit('jobs-cleared', ids); renderStatus();
+  });
   es.addEventListener('text', (e) => emit('text', JSON.parse(e.data)));
   es.addEventListener('proxy', (e) => emit('proxy', JSON.parse(e.data)));
   es.addEventListener('agent', (e) => emit('agent', JSON.parse(e.data)));
@@ -83,6 +89,11 @@ export function watchJob(id, fn, ms = 700) {
   return () => { stop = true; off(); };
 }
 export function cancelJob(id) { return post('/api/cancel', { id }); }
+/* forget finished jobs: one by id, or all after a confirm. Running jobs stay. */
+export async function clearJobs(id) {
+  if (!id && !(await confirmBox('Clear job history', 'Remove every finished job from the history? Running jobs and library files stay.', 'Clear all', true))) return;
+  try { await post('/api/jobs/clear', id ? { id } : {}); } catch (e) { toast(e.message, true); }
+}
 
 /* ---------- toast, modal ---------- */
 let toastTimer;
@@ -261,6 +272,8 @@ export function jobCard(j, opts = {}) {
     // cards are redrawn often: a negative delay keeps the sheen moving instead of restarting
     el.append(h(`<div class="bar"><i style="width:${Math.round((j.progress || 0) * 100)}%;animation-delay:-${(performance.now() % 1800) / 1000}s"></i></div>`));
     const c = h('<button class="btn ghost sm" title="Cancel">✕</button>'); c.onclick = () => cancelJob(j.id); $('.head', el).append(c);
+  } else {
+    const c = h('<button class="btn ghost sm" title="Remove from history">✕</button>'); c.onclick = (e) => { e.stopPropagation(); clearJobs(j.id); }; $('.head', el).append(c);
   }
   if (j.error) el.append(h(`<div class="small" style="color:var(--danger);margin-top:4px">${esc(j.error)}</div>`));
   if (!opts.noOutput) { const row = jobLinks(j); if (row) { row.style.marginTop = '6px'; el.append(row); } }
@@ -296,7 +309,10 @@ function renderTray() {
   const jobs = [...store.jobs.values()].sort((a, b) => (b.started || 0) - (a.started || 0)).slice(0, 12);
   if (!jobs.length) tray.append(h('<div class="empty">No jobs yet.</div>'));
   for (const j of jobs) tray.append(jobCard(j));
-  const all = h('<button class="btn ghost sm" style="margin-top:8px;width:100%">All jobs in System</button>'); all.onclick = () => { tray.hidden = true; go('system'); }; tray.append(all);
+  const foot = h('<div class="row" style="margin-top:8px"><button class="btn ghost sm grow" data-all>All jobs in System</button></div>');
+  $('[data-all]', foot).onclick = () => { tray.hidden = true; go('system'); };
+  if (jobs.some((j) => !STATUS_ACTIVE.includes(j.status))) { const c = h('<button class="btn ghost sm">Clear history</button>'); c.onclick = () => { tray.hidden = true; clearJobs(); }; foot.append(c); }
+  tray.append(foot);
 }
 $('#tray-btn').onclick = () => { const t = $('#tray'); t.hidden = !t.hidden; if (!t.hidden) renderTray(); };
 document.addEventListener('mousedown', (e) => { if (!e.target.closest('#tray, #tray-btn')) $('#tray').hidden = true; });

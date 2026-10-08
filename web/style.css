@@ -314,7 +314,7 @@ pre.code { font: 12.5px/1.5 var(--f-mono); background: var(--screen); color: #d8
 .ag-term .dim { color: #7d8794; }
 .ag-term.out { color: #9da5b4; margin-top: -6px; border-top: 1px solid #1f242c; border-radius: 0 0 6px 6px; white-space: pre-wrap; }
 .ag-term .spin { animation: pulse 1s infinite; }
-.ag-media { max-width: 420px; max-height: 280px; border-radius: 8px; cursor: pointer; }
+.ag-media { align-self: flex-start; width: auto; height: auto; max-width: min(420px, 100%); max-height: 280px; object-fit: contain; border-radius: 8px; cursor: pointer; }
 .ag-stats { font: 11px var(--f-mono); color: var(--ink-3); }
 .ag-file { border: 1px solid var(--mark); background: var(--mark-soft); border-radius: 10px; padding: 10px 12px; max-width: 92%; }
 .ag-compose textarea { min-height: 64px; }
@@ -374,8 +374,10 @@ pre.code { font: 12.5px/1.5 var(--f-mono); background: var(--screen); color: #d8
 .models { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; margin: 6px 0 10px; }
 .model { border: 1px solid var(--line); border-radius: var(--r-sm); padding: 8px 10px; font-size: 12.5px; }
 .model .bar > i { background: var(--mc, var(--accent)); }
-.feed .frow { display: grid; grid-template-columns: 52px 74px 26px 62px 1fr; gap: 8px; align-items: center; padding: 5px 8px; border-radius: 6px; font-size: 12.5px; cursor: pointer; }
+.feed .frow { display: grid; grid-template-columns: 52px 74px 26px 62px 1fr auto; gap: 8px; align-items: center; padding: 5px 8px; border-radius: 6px; font-size: 12.5px; cursor: pointer; }
 .feed .frow:hover { background: var(--surface-2); }
+.feed .frow > button { opacity: 0; transition: opacity .15s; }
+.feed .frow:hover > button, .feed .frow > button:focus-visible { opacity: 1; }
 .feed .frow .grow { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .jdetail { margin: 2px 0 8px 60px; padding: 8px 10px; background: var(--surface-2); border-radius: var(--r-sm); font-size: 12.5px; display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 4px 14px; }
 .warnbar { background: var(--mark-soft); border: 1px solid var(--mark); color: var(--ink); border-radius: var(--r); padding: 9px 12px; margin-bottom: 12px; }
