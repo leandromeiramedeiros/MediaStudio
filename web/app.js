@@ -120,7 +120,8 @@ export function modal(title, body, buttons = []) {
 }
 
 /* ---------- motion helpers ---------- */
-export const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+const osReduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+export const reduced = () => { const m = document.documentElement.dataset.motion; return m ? m === 'off' : osReduced(); };
 const EASE = 'cubic-bezier(.32, .72, 0, 1)';
 /* shrink an element away (height, fade, scale), then remove it */
 export function collapse(el) {
@@ -319,6 +320,22 @@ $('#theme').onclick = (e) => {
       { duration: 650, easing: EASE, pseudoElement: '::view-transition-new(root)' });
   });
 };
+/* motion: system (follows the OS reduce-motion setting), on or off, remembered */
+function setMotion(m) { if (m) document.documentElement.dataset.motion = m; else delete document.documentElement.dataset.motion; try { localStorage.setItem('ms.motion', m || ''); } catch (e) { /* storage off */ } }
+try { setMotion(localStorage.getItem('ms.motion') || ''); } catch (e) { /* storage off */ }
+const MOTION = { '': 'system', on: 'on', off: 'off' }, NEXT = { '': 'on', on: 'off', off: '' };
+const drawMotion = () => {
+  const m = document.documentElement.dataset.motion || '', live = !reduced();
+  $('#motion').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8c3-3 6 3 9 0s6 3 9 0M3 16c3-3 6 3 9 0s6 3 9 0"/>' + (live ? '' : '<path d="M4 4l16 16"/>') + '</svg>';
+  $('#motion').title = `Motion: ${MOTION[m]}${m ? '' : ` (${live ? 'on' : 'off'})`}`;
+  $('#motion').classList.toggle('auto', !m);
+};
+$('#motion').onclick = () => {
+  setMotion(NEXT[document.documentElement.dataset.motion || '']); drawMotion();
+  play(reduced() ? 'off' : 'on'); toast($('#motion').title);
+};
+matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', drawMotion);
+drawMotion();
 /* sound on/off */
 const SPK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4z"/>';
 const drawMute = () => { $('#mute').innerHTML = SPK + (isMuted() ? '<path d="M22 9l-6 6M16 9l6 6"/></svg>' : '<path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>'); $('#mute').title = isMuted() ? 'Sounds off' : 'Sounds on'; };

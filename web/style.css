@@ -99,8 +99,9 @@ button.pill:hover { border-color: var(--accent); }
 button.pill:active { transform: scale(.94); transition-duration: .1s; }
 @keyframes pulse { 50% { opacity: .35; } }
 @keyframes ping { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 55%, transparent); } 80%, 100% { box-shadow: 0 0 0 7px transparent; } }
-.icon-btn { width: 30px; height: 30px; padding: 0; border-radius: 50%; }
-.icon-btn svg { width: 16px; height: 16px; }
+.btn.icon-btn { width: 30px; height: 30px; padding: 0; border-radius: 50%; }
+.btn.icon-btn svg { width: 16px; height: 16px; flex: none; }
+.icon-btn.auto svg { opacity: .6; } /* following the OS */
 .view { overflow: auto; min-height: 0; scroll-behavior: smooth; }
 .page { padding: 20px 22px 44px; max-width: 1500px; margin: 0 auto; }
 .page-head { display: flex; align-items: end; justify-content: space-between; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
@@ -341,9 +342,11 @@ pre.code { font: 12.5px/1.5 var(--f-mono); background: var(--screen); color: #d8
 /* theme switch: app.js grows the new theme as a circle; no default crossfade */
 ::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
 
+/* motion: follows the OS unless the header toggle forces it (html[data-motion=on|off]) */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+  :root:not([data-motion="on"]) *, :root:not([data-motion="on"]) *::before, :root:not([data-motion="on"]) *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
+:root[data-motion="off"] *, :root[data-motion="off"] *::before, :root[data-motion="off"] *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 
 /* ---------- system ---------- */
 .gauges { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
