@@ -62,17 +62,18 @@ function bounds(L) {
 const toDoc = (e) => { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) * D.w / r.width, y: (e.clientY - r.top) * D.h / r.height }; };
 
 function syncSize() { if (!root) return; $('[data-w]', root).value = D.w; $('[data-hh]', root).value = D.h; }
+function syncVis() { if (!root) return; $('[data-none]', root).hidden = !!D; cv.hidden = !D; }
 
 async function openImage(path) {
   const src = fileUrl(path);
   D = { path, img: await load(src), rot: 0, flipH: false, flipV: false, crop: null, layers: [], w: 0, h: 0, keepSize: false, bg: null };
   Object.assign(ADJ, { b: 100, c: 100, s: 100 }); selLayer = null; cropRect = null;
-  rebuildBase(); drawControls(); render();
+  rebuildBase(); drawControls(); render(); syncVis();
   setPref('image.last', path);
 }
 function blankDoc(w, hh, bg) {
   D = { path: null, img: null, rot: 0, flipH: false, flipV: false, crop: null, layers: [], w, h: hh, keepSize: true, bg };
-  base = null; selLayer = null; cropRect = null; syncSize(); drawControls(); render();
+  base = null; selLayer = null; cropRect = null; syncSize(); drawControls(); render(); syncVis();
 }
 
 function drawControls() {
@@ -187,13 +188,11 @@ export function mount(el, arg) {
     const up = () => { removeEventListener('mousemove', mv); removeEventListener('mouseup', up); };
     addEventListener('mousemove', mv); addEventListener('mouseup', up);
   };
-  const obs = new MutationObserver(() => { $('[data-none]', el).hidden = !!D; cv.hidden = !D; });
-  obs.observe(cv, { attributes: true });
-  cv.hidden = true;
-  if (arg?.path) show(arg); else { const last = pref('image.last', null); if (last) openImage(last).then(() => { $('[data-none]', el).hidden = true; cv.hidden = false; }).catch(() => {}); }
+  syncVis();
+  if (arg?.path) show(arg); else { const last = pref('image.last', null); if (last) openImage(last).catch(() => {}); }
 }
 export async function show(arg) {
-  if (arg?.path) { await openImage(arg.path); $('[data-none]', root).hidden = true; cv.hidden = false; }
+  if (arg?.path) await openImage(arg.path);
 }
 export function onKey(e) {
   if ((e.key === 'Delete' || e.key === 'Backspace') && selLayer) { D.layers = D.layers.filter((L) => L !== selLayer); selLayer = null; drawControls(); render(); }
