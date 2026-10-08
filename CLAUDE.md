@@ -10,15 +10,6 @@ When reporting to me, be extremely concise and sacrifice grammar for sake of con
 - `server.py`: HTTP API, SSE `/api/events` (snapshot, job, text, proxy), static `web/`. Binds 127.0.0.1:8095 only.
   POSTs need the `X-Studio: 1` header, and the Host header must be local.
   The Runner never lets jobs of different GPU runtimes overlap (qwen vs comfy vs director). ffmpeg jobs never wait.
-- `studio/`:
-  - `paths.py`: every location; `tool()` finds ffmpeg/ffprobe.
-  - `jobs.py`: Job records in `data/jobs/`, output sidecars, process helpers.
-  - `qwen.py`, `comfy.py`: the runtimes, presets and effort ladders.
-  - `web.py`: online tools.
-  - `media.py`: ffmpeg probe, posters, proxies, project render, Nexus GIF.
-  - `orchestrate.py`: plan, then media, then assemble.
-  - `resources.py`: the System snapshot.
-  - `cli.py`: the same engines from a terminal.
 - `web/`:
   - `app.js`: shell, API helpers, pickers, effort slider, job tray.
   - `tabs/<id>.js`: one module per tab; each has `mount(el, arg)`, and optionally `show(arg)`, `hide()`, `onKey(e)`.
@@ -51,11 +42,7 @@ When reporting to me, be extremely concise and sacrifice grammar for sake of con
   - qwen `EFFORT`: thinking and token budget;
   - comfy `PRESETS[*].effort`: steps, resolution, TTS model size.
   - Explicit params override the ladder.
-- ComfyUI node facts:
-  - Audio is saved with `SaveAudioAdvanced`. Its format is a dynamic combo sent as `"format": "mp3"` plus `"format.quality": "320k"`. FLAC is the default.
-  - MiniMax-Music-3 needs the template's structured caption: Global Metadata / Vocal Details / Arrangement. Short captions sound muffled, so `enhance` has qwen write it (`MUSIC_CAPTION_SYSTEM`).
-  - Official settings live in the templates: `standalone-env/Lib/site-packages/comfyui_workflow_templates_json/templates/`.
-  - Read the speaker list etc. from the node source (`custom_nodes/ComfyUI-Qwen-TTS/nodes.py`). Never invent node inputs.
+- ComfyUI node facts: `studio/CLAUDE.md`. Never invent node inputs.
 - ffmpeg: winget `Gyan.FFmpeg` full build: libx264, nvenc, no librsvg, so the app rasterizes SVGs to PNG before a render.
   `drawtext` gets its text through `textfile=` with `expansion=none`, so no filtergraph escaping is needed.
 
