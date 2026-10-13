@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Media Studio</title>
+<script>
+try {
+  var d = document.documentElement, L = localStorage;
+  d.dataset.skin = L.getItem("ms.skin") || "neon";
+  if (L.getItem("ms.theme")) d.dataset.theme = L.getItem("ms.theme");
+  if (L.getItem("ms.motion")) d.dataset.motion = L.getItem("ms.motion");
+} catch (e) { document.documentElement.dataset.skin = "neon"; }
+</script>
+<link rel="icon" href="app/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="app/style.css">
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand"><img src="app/icon.svg" alt="" width="26" height="26">Media Studio</div>
+    <nav class="tabs" id="tabs" role="tablist"></nav>
+    <div class="status">
+      <button class="pill" id="libpill" type="button"><span class="dot"></span><span>No library</span></button>
+      <button class="pill qpill" id="qpill" type="button"><span class="qf" data-qf></span><span class="dot"></span><span data-qt>Exports</span></button>
+      <button class="btn ghost icon-btn" id="hk" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="3"/><path d="M6.5 10h.01M10 10h.01M14 10h.01M17.5 10h.01M8 14h8"/></svg></button>
+      <button class="btn ghost icon-btn" id="motion" type="button" title="Motion"></button>
+      <button class="btn ghost icon-btn" id="mute" type="button" title="Sounds (M)"></button>
+      <button class="btn ghost icon-btn" id="theme" type="button" title="Theme">&#9680;</button>
+      <button class="btn ghost icon-btn" id="settings" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+    </div>
+  </header>
+  <main class="view" id="view"></main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="app/core/util.js"></script>
+<script src="app/core/sfx.js"></script>
+<script src="app/core/ui.js"></script>
+<script src="app/core/db.js"></script>
+<script src="app/core/lib.js"></script>
+<script src="app/core/src.js"></script>
+<script src="app/core/queue.js"></script>
+<script src="app/gif/worker.js"></script>
+<script src="app/gif/nexus.js"></script>
+<script src="app/video/mp4.js"></script>
+<script src="app/video/render.js"></script>
+<script src="app/tabs/library.js"></script>
+<script src="app/tabs/gif.js"></script>
+<script src="app/tabs/compress.js"></script>
+<script src="app/tabs/editor.js"></script>
+<script src="app/tabs/export.js"></script>
+<script src="app/core/shell.js"></script>
+</body>
+</html>
